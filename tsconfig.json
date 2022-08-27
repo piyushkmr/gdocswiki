@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "jsx": "preserve",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "paths": {
+      "utils": [
+        "./src/utils"
+      ],
+      "components": [
+        "./src/components"
+      ]
+    },
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "outDir": "dist",
+    "target": "ESNext",
+    "sourceMap": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "incremental": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "plugins": [{ "name": "typescript-plugin-css-modules" }]
+  },
+  "include": [
+    "./src"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

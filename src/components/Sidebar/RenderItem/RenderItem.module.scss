@@ -1,0 +1,101 @@
+@keyframes itemContentLoaded {
+  0% {
+    height: 0;
+  }
+  100% {
+    height: 2rem;
+  }
+}
+
+@keyframes fileAdded {
+  0% {
+    background-color: var(--white);
+  }
+  25% {
+    background-color: var(--green--200);
+  }
+  75% {
+    background-color: var(--green--200);
+  }
+  100% {
+    background-color: var(--white);
+  }
+}
+
+.itemContent {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 2rem;
+  cursor: default;
+  padding: 0 0.25rem;
+  margin: 0.125rem 0.25rem;
+  border-radius: var(--border-radius);
+  animation: itemContentLoaded 0.25s ease-in-out;
+  background-color: var(--white);
+
+  &:hover {
+    background: var(--blue--100);
+  }
+  &:active {
+    background: var(--blue--200);
+  }
+  &.active .fileName{
+    font-weight: bold;
+  }
+  &.added {
+    animation: itemContentLoaded 0.25s ease-in-out, fileAdded 1s ease-in-out;
+  }
+
+  .fileIcon {
+    width: 1em;
+    height: 1em;
+    padding-right: 0.5em;
+    &.fileIcon-folder {
+      transform: scale(1.2);  
+    }
+  }
+
+  .fileName {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    height: 2rem;
+  }
+
+  .folderDropdownIcon {
+    width: 0.5em;
+    height: 0.5em;
+    opacity: 0.5;
+    margin-right: 0.125em;
+    box-sizing: border-box;
+    transition: 0.25s background-color, 0.25s transform;
+    transform: rotate(0deg);
+
+    &.folderOpen {
+      transform: rotate(90deg);
+    }
+  }
+  .dropdownPlaceholder {
+    width: 0.75em;
+  }
+}
+
+.itemContent {
+  .actions {
+    opacity: 0;
+    .singleAction {
+      width: 1em;
+      height: 1em;
+      padding: 0.125em;
+      margin: 0.125em;
+      box-sizing: border-box;
+    }
+  }
+  &:hover .actions {
+    opacity: 1;
+  }
+}

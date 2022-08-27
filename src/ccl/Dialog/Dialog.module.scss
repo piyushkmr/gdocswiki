@@ -1,0 +1,37 @@
+.dialogContainer {
+  .dialogTitle {
+    display: flex;
+    padding: 1em;
+    padding-bottom: 0;
+    align-items: center;
+    position: relative;
+
+    .dialogTitleName {
+      margin: 0;
+    }
+  
+    .dialogClose {
+      position: absolute;
+      padding: 0.75em;
+      right: 0;
+      top: 0;
+    }
+  }
+
+  .dialogBody {
+    padding: 1rem;
+  }
+  
+  .dialogActions {
+    display: flex;
+    flex-direction: row-reverse;
+    padding: 1em;
+    padding-top: 0;
+    button {
+      margin-right: 0.5em;
+      &:first-child {
+        margin-right: 0;
+      }
+    }
+  }
+}

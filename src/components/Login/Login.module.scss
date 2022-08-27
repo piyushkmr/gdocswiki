@@ -1,0 +1,52 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.signInContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .appName {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .signInHeading {
+    font-size: 1.5em;
+  }
+
+  .googleSignInButtonLink {
+    text-decoration: none;
+    font-size: 1.25rem;
+    margin-top: 1em;
+    .googleSignInButton {
+      padding: 0.5em 3em;
+      height: 2em;
+      border-radius: var(--border-radius);
+      border: none;
+      box-shadow: 0 0.1em 0.25em rgb(0 0 0 / 10%), 0 0.25em 3em -0.5em rgb(0 0 0 / 25%);
+      background-color: var(--white);
+      display: flex;
+      align-items: center;
+      color: #757575;
+      font-size: 1em;
+      font-weight: bold;
+      box-sizing: content-box;
+    }
+
+    .googleLogo {
+      width: 1em;
+      height: 1em;
+      margin-right: 0.5em;
+      display: inline-block;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMTcuNiA5LjJsLS4xLTEuOEg5djMuNGg0LjhDMTMuNiAxMiAxMyAxMyAxMiAxMy42djIuMmgzYTguOCA4LjggMCAwIDAgMi42LTYuNnoiIGZpbGw9IiM0Mjg1RjQiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik05IDE4YzIuNCAwIDQuNS0uOCA2LTIuMmwtMy0yLjJhNS40IDUuNCAwIDAgMS04LTIuOUgxVjEzYTkgOSAwIDAgMCA4IDV6IiBmaWxsPSIjMzRBODUzIiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNNCAxMC43YTUuNCA1LjQgMCAwIDEgMC0zLjRWNUgxYTkgOSAwIDAgMCAwIDhsMy0yLjN6IiBmaWxsPSIjRkJCQzA1IiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNOSAzLjZjMS4zIDAgMi41LjQgMy40IDEuM0wxNSAyLjNBOSA5IDAgMCAwIDEgNWwzIDIuNGE1LjQgNS40IDAgMCAxIDUtMy43eiIgZmlsbD0iI0VBNDMzNSIgZmlsbC1ydWxlPSJub256ZXJvIi8+PHBhdGggZD0iTTAgMGgxOHYxOEgweiIvPjwvZz48L3N2Zz4=);
+    }
+  }
+}

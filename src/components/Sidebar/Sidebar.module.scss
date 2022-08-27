@@ -1,0 +1,10 @@
+.sidebar {
+  padding: 0;
+  width: 25rem;
+  height: 100%;
+  overflow: auto;
+  box-sizing: border-box;
+  background-color: var(--white);
+  box-shadow: 0 0 20px -10px #333;
+  z-index: 1;
+}

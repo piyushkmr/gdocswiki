@@ -1,0 +1,19 @@
+.documentActions {
+  padding: 0.5rem;
+  display: flex;
+  
+  a.externalLink {
+    text-decoration: none;
+  }
+
+  .withIcon {
+    display: flex;
+    align-items: center;
+
+    :global(.icon) {
+      margin-right: 0.5em;
+      margin-bottom: 0.25em;
+      display: inline-flex;
+    }
+  }
+}
