@@ -5,6 +5,7 @@ import { useStore, useStoreFiles, UIFile } from 'utils/store';
 import { RenderTree } from './RenderTree';
 import style from './Sidebar.module.scss';
 
+const FOLDER = '0B9oyVSxjsB-VM2VPYnhMdXRVSE0';
 
 export const Sidebar: FunctionComponent = () => {
   const { isAuthenticated } = useGAuth();
@@ -13,7 +14,7 @@ export const Sidebar: FunctionComponent = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      getFilesInFolder('1JcklaK-m-KL-khbFGA4egX-NnH0fprl5').then((files) => addFiles(files, '1JcklaK-m-KL-khbFGA4egX-NnH0fprl5'));
+      getFilesInFolder(FOLDER).then((files) => addFiles(files, FOLDER));
     }
   }, [isAuthenticated]);
 

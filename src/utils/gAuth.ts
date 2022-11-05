@@ -1,73 +1,42 @@
 import { useEffect, useState } from 'react';
 import { http } from './http';
 import { singletonHook } from 'react-singleton-hook';
+import { sprintf } from 'sprintf-js';
 
-const CLIENT_ID = '';
-const CLIENT_SECRET = '';
-const REDIRECT_URL = 'https://localhost:3000';
+// mongodb+srv://gdocswikiuser:uihwEblsF6cdPUkh@gdocswiki0.m5awmza.mongodb.net/?retryWrites=true&w=majority
+
+const API_BASE = 'https://localhost:3000/api';
+
 
 const LOCAL_STORAGE = {
   ACCESS_TOKEN: 'access_token',
   REFRESH_TOKEN: 'refresh_token',
 }
-const getTokenUsingCode = (code: string) => {
-  return http.post('https://oauth2.googleapis.com/token', {
-    code: code,
-    redirect_uri: REDIRECT_URL,
-    client_id: CLIENT_ID,
-    client_secret: CLIENT_SECRET,
-    scope: 'https://www.googleapis.com/auth/drive',
-    grant_type: 'authorization_code',
-  }).then((resp) => {
-    console.debug({ codeResp: resp.data });
-    localStorage.setItem('code', code);
-    localStorage.setItem(LOCAL_STORAGE.ACCESS_TOKEN, resp.data.access_token);
-    localStorage.setItem(LOCAL_STORAGE.REFRESH_TOKEN, resp.data.refresh_token);
-    return resp.data.access_token as string;
-  }).catch(() => {
-    return getTokenFromRefresh();
-  });
+
+const AUTH_API = {
+  GET_TOKEN: `${API_BASE}/getToken?code=%(code)s&refreshToken=%(refreshToken)s`,
+};
+
+interface TokenResponse {
+  accessToken: string;
+  refreshToken?: string;
+  authUrl?: string;
 }
 
-const getTokenFromRefresh = () => {
-  const refreshToken = localStorage.getItem(LOCAL_STORAGE.REFRESH_TOKEN);
-  if (refreshToken) {
-    return http.post('https://oauth2.googleapis.com/token', {
-      refresh_token: refreshToken,
-      client_id: CLIENT_ID,
-      client_secret: CLIENT_SECRET,
-      grant_type: 'refresh_token',
-    }).then((resp) => {
-      console.debug({ refreshResponse: resp.data });
-      localStorage.setItem(LOCAL_STORAGE.ACCESS_TOKEN, resp.data.access_token);
-      return resp.data.access_token as string;
-    });
-  } else {
-    return Promise.resolve('REFRESH_TOKEN_NOT_FOUND');
+const getToken = (code: string, refreshToken = '') => {
+  return http.get<TokenResponse>(sprintf(AUTH_API.GET_TOKEN, { code, refreshToken })).then((resp) => resp.data);
+}
+
+export const getAccessCodes = async (code?: string) => {
+  const refreshTokenLocal = localStorage.getItem(LOCAL_STORAGE.REFRESH_TOKEN);
+  const tokenResponse = await getToken(code, refreshTokenLocal);
+  const {accessToken, refreshToken} = tokenResponse;
+  if (accessToken !== 'REFRESH_TOKEN_NOT_FOUND') {
+    http.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
+    localStorage.setItem(LOCAL_STORAGE.ACCESS_TOKEN, accessToken);
+    localStorage.setItem(LOCAL_STORAGE.REFRESH_TOKEN, refreshToken);
   }
-}
-
-export const getAccessToken = (code?: string) => {
-  let authPromise: Promise<string>;
-  if (code) {
-    authPromise = getTokenUsingCode(code);
-  } else {
-    authPromise = getTokenFromRefresh();
-  }
-  authPromise.then((accessToken) => {
-    if (accessToken !== 'REFRESH_TOKEN_NOT_FOUND') {
-      http.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
-    }
-    return accessToken;
-  });
-  return authPromise;
-}
-
-const getAuthUrl = () => {
-  const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive';
-  const OAUTH_BASE_URL = 'https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount';
-  const STATIC_PARAMS = '&prompt=consent&response_type=code&access_type=offline&flowName=GeneralOAuthFlow';
-  return `${OAUTH_BASE_URL}?redirect_uri=${REDIRECT_URL}&client_id=${CLIENT_ID}&scope=${DRIVE_SCOPE}${STATIC_PARAMS}`;
+  return tokenResponse;
 }
 
 interface GAuthState {
@@ -93,15 +62,16 @@ const getGAuth = () => {
   const performAuth = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const authCode = urlParams.get('code');
-    return getAccessToken(authCode).then((respAccessToken) => {
-      if (respAccessToken === 'REFRESH_TOKEN_NOT_FOUND') {
-        console.log(`Error getting access token: ${respAccessToken}`);
-        setAuthUrl(getAuthUrl());
-        setAuthError(respAccessToken);
+    return getAccessCodes(authCode).then((respAccess) => {
+      const { accessToken, authUrl } = respAccess;
+      if (accessToken === 'REFRESH_TOKEN_NOT_FOUND') {
+        console.log(`Error getting access token: ${accessToken}`);
+        setAuthUrl(authUrl);
+        setAuthError(accessToken);
       } else {
         setIsAuthenticated(true);
-        setAccessToken(respAccessToken);
-        return respAccessToken;
+        setAccessToken(accessToken);
+        return accessToken;
       }
     }).finally(() => {
       setIsAuthenticating(false);
