@@ -3,14 +3,7 @@ import { UIFile } from 'utils/store';
 import { sprintf } from 'sprintf-js';
 import { FileTypes, GDriveFile, DocumentUrlType } from './gDriveTypes';
 import { DOCUMENT_URL_TYPE_MAPPING, FILES_FIELDS, FILE_FIELDS } from './gDriveConstants';
-
-const GDRIVE_BASE_URL = 'https://www.googleapis.com/drive/v3';
-const GDOCS_BASE_URL = 'https://docs.googleapis.com/v1';
-
-const GDRIVE_API = {
-  GET_FILES: `${GDRIVE_BASE_URL}/files`,
-  CREATE_DOCUMENT: `${GDOCS_BASE_URL}/documents`,
-}
+import { GDRIVE_API } from 'utils/gApi';
 
 const DEFAULT_PARAMS = {
   GET_FILES_IN_FOLDER: `q="%(folderId)s"+in+parents&fields=${FILES_FIELDS}`,

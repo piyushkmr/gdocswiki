@@ -6,8 +6,8 @@ import { Login } from 'components/Login';
 // const root = createRoot(container);
 // root.render(<App />);
 
-const Index = () => {
+const Page = () => {
   return <Login />;
 }
 
-export default Index;
+export default Page;

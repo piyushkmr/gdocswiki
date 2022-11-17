@@ -29,7 +29,7 @@
     "_start": "yarn run start-dev",
     "start-dev": "webpack serve --config=configs/webpack/dev.js",
     "start-prod": "yarn run build && node express.js",
-    "_dev": "next dev -p 3001",
+    "_dev": "NODE_OPTIONS='--inspect' next dev -p 3001",
     "_ssl": "local-ssl-proxy --source 3000 --target 3001",
     "dev": "concurrently \"yarn run _dev\" \"yarn run _ssl\"",
     "build": "next build",

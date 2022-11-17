@@ -1,5 +1,6 @@
 import { getCssTheme } from 'ccl/style/getCssTheme';
 import React, { useEffect, useState } from 'react';
+import App from 'next/app';
 import { DialogPortal } from 'ccl/Dialog';
 import Head from 'next/head'
 import '../components/theme.scss';
@@ -15,7 +16,7 @@ export default function MyApp({ Component, pageProps }) {
     <Head>
       <title>GDocsWiki</title>
     </Head>  
-    <style>{`:root {${cssTheme}}`}</style>    
+    <style>{`:root {${cssTheme}}`}</style>
     <Component {...pageProps} />
     <DialogPortal />
   </>;
