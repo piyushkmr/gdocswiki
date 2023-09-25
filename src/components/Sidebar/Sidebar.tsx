@@ -1,16 +1,16 @@
 import React, { FunctionComponent, useEffect } from 'react';
 import { useGAuth } from 'utils/gAuth';
-import { getFilesInFolder } from 'utils/gDrive';
+import { getFilesInFolder } from 'utils/drive';
 import { useStore, useStoreFiles, UIFile } from 'utils/store';
 import { RenderTree } from './RenderTree';
 import style from './Sidebar.module.scss';
 
-const FOLDER = '0B9oyVSxjsB-VM2VPYnhMdXRVSE0';
+const FOLDER = 'root';// '0B9oyVSxjsB-VM2VPYnhMdXRVSE0';
 
 export const Sidebar: FunctionComponent = () => {
   const { isAuthenticated } = useGAuth();
   const setActiveDocument = useStore('activeDocument')[1];
-  const { fileTree, isFolderOpen, setFolderOpen, addFiles } = useStoreFiles();
+  const { fileTree, isFolderOpen, setFolderOpen, addFiles, spaces } = useStoreFiles();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -37,6 +37,7 @@ export const Sidebar: FunctionComponent = () => {
 
   return isAuthenticated ?
     <div className={style.sidebar}>
+      <div>{spaces.map((space) => space.displayName)}</div>
       <RenderTree tree={fileTree} onItemClick={onDocumentClick} />
     </div> : null;
 };

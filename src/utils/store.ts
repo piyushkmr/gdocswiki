@@ -1,6 +1,11 @@
 import { createGlobalState } from 'react-hooks-global-state';
 import { DocumentUrlType, GDriveFile } from './gDrive';
+import { useEffect } from 'react';
+import { getFileInfo, getFilesInFolder } from './drive';
 
+/**
+ * `UIFile` interface has additional properties to properly display files in sidebar.
+ */
 export interface UIFile extends GDriveFile {
   isOpen: boolean;
   indentation: number;
@@ -9,18 +14,31 @@ export interface UIFile extends GDriveFile {
   currentView?: DocumentUrlType;
   addedByUser?: boolean;
   deletedByUser?: boolean;
+  /**
+   * To show custom display for the file name, overrides default `name` property
+   * This can be use to parse file names with spacial prefixex (or to remove extensions)
+   */
+  displayName?: string;
 }
 
 interface StoreState {
   activeDocument?: UIFile,
   files: UIFile[];
   fileTree?: UIFile[];
+  spaces: UIFile[];
+  root?: UIFile;
 }
+
 const initialState: StoreState = {
   activeDocument: undefined,
   files: [],
   fileTree: undefined,
+  spaces: [],
+  root: undefined,
 };
+
+const SPACES_PREFIX = 'SPACE:';
+
 const globalState = createGlobalState<StoreState>(initialState);
 
 const convertListToTree = (files: UIFile[]) => {
@@ -47,16 +65,42 @@ const injectInArray = <T extends any>(array: T[], newIndex: number, newItems: T[
   }
 }
 
+const getSpacesFromFiles = (files: UIFile[]) => {
+  const spaces = files.filter((file) => file.name.startsWith(SPACES_PREFIX))
+  spaces.forEach((file) => file.displayName = file.name.replace(SPACES_PREFIX, ''));
+  // const rootFile = files.find((file) => file.parent)
+  return spaces;
+};
+
 export const useStoreFiles = () => {
   const [files, setFiles] = globalState.useGlobalState('files');
+  const [root, setRoot] = globalState.useGlobalState('root');
+  const [spaces, setSpaces] = globalState.useGlobalState('spaces');
   const [fileTree, setFileTree] = globalState.useGlobalState('fileTree');
   const [activeDocument, setActiveDocument] = globalState.useGlobalState('activeDocument');
+
+  useEffect(() => {
+    if (!root) {
+      getFileInfo('root').then((file) => {
+        const uiFile = {
+          ...file,
+          isOpen: true,
+          indentation: 0,
+          parent: null,
+          displayName: 'Global'
+        }
+        setRoot(uiFile);
+        setSpaces([uiFile, ...getSpacesFromFiles(files)]);
+      });
+    }
+  }, []);
   const isFolderOpen = (id: string) => {
     const file = files.find(file => file.id === id);
     if (file) {
       return file.isOpen
     }
   };
+
   const setFolderOpen = (id: string, isOpen: boolean) => {
     const file = files.find(file => file.id === id);
     if (file) {
@@ -64,6 +108,7 @@ export const useStoreFiles = () => {
       setFiles([...files]);
     }
   };
+
   const setFilesIndentation = (id: string, indentation: number) => {
     const file = files.find(file => file.id === id);
     if (file) {
@@ -94,6 +139,7 @@ export const useStoreFiles = () => {
     }
     setFileTree(convertListToTree(allFiles));
     setFiles(allFiles);
+    setSpaces(root ? [root, ...getSpacesFromFiles(allFiles)] : getSpacesFromFiles(allFiles));
   };
 
   const removeFile = (id: string) => {
@@ -106,9 +152,11 @@ export const useStoreFiles = () => {
     });
     setFileTree(convertListToTree(newFiles));
     setFiles(newFiles);
+    setSpaces(root ? [root, ...getSpacesFromFiles(newFiles)] : getSpacesFromFiles(newFiles));
   };
   const filesStore = {
     files,
+    spaces,
     fileTree,
     activeDocument,
     setActiveDocument,

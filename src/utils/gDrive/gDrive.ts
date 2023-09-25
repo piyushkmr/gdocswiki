@@ -32,6 +32,14 @@ export const getFilesInFolder = (folderId: string) => {
   });
 };
 
+export const getFileInfo = (fileId: string) => {
+  return http.get(`${GDRIVE_API.GET_FILES}/${fileId}`).then((resp) => {
+    const file = resp.data as GDriveFile;
+    file.type = file.mimeType.replace('application/vnd.google-apps.', '') as FileTypes;
+    return file;
+  });
+};
+
 /** UPDATE */
 export const updateFileParents = (fileId: string, newParents: string[]) => {
   const fields = FILE_FIELDS.join(',');
